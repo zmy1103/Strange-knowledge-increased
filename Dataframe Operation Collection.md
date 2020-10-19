@@ -1,5 +1,7 @@
 ## Dataframe Operation Collection
 
+[TOC]
+
 ### 删除某一列 
 
 - 根据列名
@@ -19,6 +21,145 @@
 - `df.columns.values.tolist()    # 列名称`
 - 获得某一列名称`df.columns[列数]`
 - 获得列名 `df.columns`
+
+### 查看某一列的数据类型
+
+- `df.dtypes`
+- `df['B'].dtypes`
+
+### Pandas分组（GroupBy）
+
+![img](https://img-blog.csdn.net/20170704221210342?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMTUyMzc5Ng==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+
+​	构建好的dataframe：
+
+```python
+    Points  Rank    Team  Year
+0      876     1  Riders  2014
+1      789     2  Riders  2015
+2      863     2  Devils  2014
+3      673     3  Devils  2015
+4      741     3   Kings  2014
+5      812     4   kings  2015
+6      756     1   Kings  2016
+7      788     1   Kings  2017
+8      694     2  Riders  2016
+9      701     4  Royals  2014
+10     804     1  Royals  2015
+11     690     2  Riders  2017
+```
+
+- 按列分组  
+
+  ```python
+  print (df.groupby('Team').groups)#一列
+  得到的结果：
+  {
+  'Devils': Int64Index([2, 3], dtype='int64'), 
+  'Kings': Int64Index([4, 6, 7], dtype='int64'), 
+  'Riders': Int64Index([0, 1, 8, 11], dtype='int64'), 
+  'Royals': Int64Index([9, 10], dtype='int64'), 
+  'kings': Int64Index([5], dtype='int64')
+  }
+  ```
+
+  ```python
+  print (df.groupby(['Team','Year']).groups)#两列
+  得到的结果：
+  {
+  ('Devils', 2014): Int64Index([2], dtype='int64'), 
+  ('Devils', 2015): Int64Index([3], dtype='int64'), 
+  ('Kings', 2014): Int64Index([4], dtype='int64'),
+  ('Kings', 2016): Int64Index([6], dtype='int64'),
+  ('Kings', 2017): Int64Index([7], dtype='int64'), 
+  ('Riders', 2014): Int64Index([0], dtype='int64'), 
+  ('Riders', 2015): Int64Index([1], dtype='int64'), 
+  ('Riders', 2016): Int64Index([8], dtype='int64'), 
+  ('Riders', 2017): Int64Index([11], dtype='int64'),
+  ('Royals', 2014): Int64Index([9], dtype='int64'), 
+  ('Royals', 2015): Int64Index([10], dtype='int64'), 
+  ('kings', 2015): Int64Index([5], dype='int64')
+  }
+  ```
+
+- 遍历，选择，分好的组
+
+```python
+grouped = df.groupby('Year')
+
+for name,group in grouped:
+    print (name)
+    print (group)
+结果：
+2014
+     Team  Rank  Year  Points
+0  Riders     1  2014     876
+2  Devils     2  2014     863
+4   Kings     3  2014     741
+9  Royals     4  2014     701
+2015
+      Team  Rank  Year  Points
+1   Riders     2  2015     789
+3   Devils     3  2015     673
+5    kings     4  2015     812
+10  Royals     1  2015     804
+2016
+     Team  Rank  Year  Points
+6   Kings     1  2016     756
+8  Riders     2  2016     694
+2017
+      Team  Rank  Year  Points
+7    Kings     1  2017     788
+11  Riders     2  2017     690
+
+选择一个分组 print (grouped.get_group(2014))
+```
+
+- 聚合agg
+
+![img](https://pic2.zhimg.com/80/v2-a0b4827a2829c7e4f9082b958f093f7d_1440w.jpg)
+
+```python
+grouped = df.groupby('Year')
+print (grouped['Points'].agg(np.mean))
+
+Year
+2014    795.25
+2015    769.50
+2016    725.00
+2017    739.00
+Name: Points, dtype: float64
+
+grouped = df.groupby('Team')
+print (grouped.agg(np.size))
+
+grouped = df.groupby('Team')
+agg = grouped['Points'].agg([np.sum, np.mean, np.std])
+print (agg)
+
+         sum        mean         std
+Team                                
+Devils  1536  768.000000  134.350288
+Kings   2285  761.666667   24.006943
+Riders  3049  762.250000   88.567771
+Royals  1505  752.500000   72.831998
+kings    812  812.000000         NaN
+```
+
+- 转换
+
+```python
+grouped = df.groupby('Team')
+score = lambda x: (x - x.mean()) / x.std()*10
+print (grouped.transform(score))
+```
+
+- 过滤
+
+```python
+filter = df.groupby('Team').filter(lambda x: len(x) >= 3)
+print (filter)
+```
 
 ### 处理缺失值（三种处理方式）
 
