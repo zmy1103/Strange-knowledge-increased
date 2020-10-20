@@ -2,6 +2,47 @@
 
 [TOC]
 
+### datetime转成date
+
+```python
+单个数据：
+datetime_object = datetime.now()
+2020-10-20 08:48:07.101235
+print(datetime.date(datetime_object))
+2020-10-20
+
+dataframe里面的操作：
+   水果  数量  价格     date
+0  苹果   3  10 2020-10-20 08:48:07.101235
+1   梨   2   9 2020-10-20 08:48:07.101235
+2  草莓   5   8 2020-10-20 08:48:07.101235
+df['date'] = df['date'].apply(lambda x: datetime.date(x)) 
+#不能直接df['date'] = datetime.date(df['date'])
+```
+
+
+
+### 遍历dataframe
+
+- iterrows(): 按行遍历，将DataFrame的每一行迭代为(index, Series)对，可以通过row[name]对元素进行访问。
+
+  ```python
+  for index, row in df.iterrows(): 
+  	print(index) # 输出每行的索引值
+  ```
+
+- itertuples(): 按行遍历，将DataFrame的每一行迭代为元祖，可以通过row[name]对元素进行访问，比iterrows()效率高。
+
+- iteritems():按列遍历，将DataFrame的每一列迭代为(列名, Series)对，可以通过row[index]对元素进行访问。
+
+### read_csv参数表
+
+- pandas.read_csv(filepath_or_buffer, sep=', ', delimiter=None, header='infer', names=None, index_col=None, usecols=None, squeeze=False, prefix=None, mangle_dupe_cols=True, dtype=None, engine=None, converters=None, true_values=None, false_values=None, skipinitialspace=False, skiprows=None, nrows=None, na_values=None, keep_default_na=True, na_filter=True, verbose=False, skip_blank_lines=True, parse_dates=False, infer_datetime_format=False, keep_date_col=False, date_parser=None, dayfirst=False, iterator=False, chunksize=None, compression='infer', thousands=None, decimal=b'.', lineterminator=None, quotechar='"', quoting=0, escapechar=None, comment=None, encoding=None, dialect=None, tupleize_cols=None, error_bad_lines=True, warn_bad_lines=True, skipfooter=0, doublequote=True, delim_whitespace=False, low_memory=True, memory_map=False, float_precision=None)
+
+### csv读入时日期型数据的处理
+
+- `parse_dates = ['B','c']`
+
 ### 删除某一列 
 
 - 根据列名
@@ -160,6 +201,19 @@ print (grouped.transform(score))
 filter = df.groupby('Team').filter(lambda x: len(x) >= 3)
 print (filter)
 ```
+
+### DataFrameGroupBy
+
+- 通过对`DataFrame`对象调用`groupby()`函数返回的结果是一个`DataFrameGroupBy`对象，而不是一个`DataFrame`或者`Series`对象，所以，它们中的一些方法或者函数是无法直接调用的，需要按照`GroupBy`对象中具有的函数和方法进行调用。
+- 通过调用`get_group()`函数可以返回一个按照分组得到的`DataFrame`对象，所以接下来的使用就可以按照·DataFrame·对象来使用。
+
+```python
+可以把处理好的`DataFrameGroupBy`转换成dataframe
+```
+
+![](https://tvax4.sinaimg.cn/large/005IQUPRly1gjvk7nhzcoj30ry02a747.jpg)
+
+![](https://tvax2.sinaimg.cn/large/005IQUPRly1gjvk6lc92kj30sx0dngme.jpg)
 
 ### 处理缺失值（三种处理方式）
 
