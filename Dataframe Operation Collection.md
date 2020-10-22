@@ -2,6 +2,31 @@
 
 [TOC]
 
+### 两列合并
+
+```python
+df['ab'] = df['a']+df['b']
+如果有一列不是str，在后面加上.map(str),str()会乱
+df['ab']=df['a']+df['b'].map(str)
+```
+
+### 某一列->list
+
+```python
+df = pd.DataFrame({'a':[1,3,5,7,4,5,6,4,7,8,9], 'b':[3,5,6,2,4,6,7,8,7,8,9]})
+把a列的元素转换成list：
+df['a'].values.tolist()
+df['a'].tolist()
+
+把a列中不重复的元素转换成list：
+df['a'].drop_duplicates().values.tolist()
+
+转换成list[list]
+df.values.tolist()
+```
+
+
+
 ### datetime转成date
 
 ```python
