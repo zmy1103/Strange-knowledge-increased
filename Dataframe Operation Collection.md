@@ -2,6 +2,89 @@
 
 [TOC]
 
+### 一列拆成多列
+
+![img](https://img-blog.csdnimg.cn/2018112217240267.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FzaGVyMTE3,size_16,color_FFFFFF,t_70)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2018112217253836.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FzaGVyMTE3,size_16,color_FFFFFF,t_70)
+
+![![在这里插入图片描述](https://img-blog.csdnimg.cn/20181122174641269.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FzaGVyMTE3,size_16,color_FFFFFF,t_70)](https://img-blog.csdnimg.cn/201811221728521.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FzaGVyMTE3,size_16,color_FFFFFF,t_70)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20181122174957765.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FzaGVyMTE3,size_16,color_FFFFFF,t_70)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20181122175101627.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FzaGVyMTE3,size_16,color_FFFFFF,t_70)
+
+### 去重
+
+DataFrame.drop_duplicates(subset=None, keep='first', inplace=False)
+
+- subset : column label or sequence of labels, optional
+  用来指定特定的列，默认所有列
+- keep : {‘first’, ‘last’, False}, default ‘first’
+  删除重复项并保留第一次出现的项
+- inplace : boolean, default False
+  是直接在原来数据上修改还是保留一个副本
+
+### 修改列名
+
+  a  b
+0  1  1
+1  2  2
+2  3  3
+
+1、修改列名a，b为A、B。
+
+df.columns = ['A','B']
+
+2、只修改列名a为A
+
+df.rename(columns={'a':'A'})
+
+### 保留或选择某些列
+
+![img](https://img-blog.csdnimg.cn/20190514173426747.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FhYV9hYWExc2Rm,size_16,color_FFFFFF,t_70)
+
+![img](https://img-blog.csdnimg.cn/20190514173506926.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FhYV9hYWExc2Rm,size_16,color_FFFFFF,t_70)
+
+### 两个dataframe横向表拼接（行对齐）
+
+https://blog.csdn.net/qq_41853758/article/details/83280104
+
+```python
+#当axis = 1的时候，concat就是行对齐，然后将不同列名称的两张表合并
+result = pd.concat([df1, df4], axis=1)
+#加上join参数的属性，如果为’inner’得到的是两表的交集，如果是outer，得到的是两表的并集
+result = pd.concat([df1, df4], axis=1, join='inner')
+```
+
+![这里写图片描述](https://img-blog.csdn.net/20160913195018721)
+
+```python
+#如果有join_axes的参数传入，可以指定根据那个轴来对齐数据 例如根据df1表对齐数据，就会保留指定的df1表的轴，然后将df4的表与之拼接
+result = pd.concat([df1, df4], axis=1, join_axes=[df1.index])
+```
+
+![这里写图片描述](https://img-blog.csdn.net/20160913195355535)
+
+```python
+#append是series和dataframe的方法，使用它就是默认沿着列进行凭借（axis = 0，列对齐）
+result = df1.append(df2)
+```
+
+![这里写图片描述](https://img-blog.csdn.net/20160913195644364)
+
+### 两个dataframe相同字段的表首尾相接
+
+![这里写图片描述](https://img-blog.csdn.net/20160913192849769)
+
+```python
+result = pd.concat(frames)
+#要在相接的时候在加上一个层次的key来识别数据源自于哪张表，可以增加key参数
+result = pd.concat(frames, keys=['x', 'y', 'z'])
+```
+
+![这里写图片描述](https://img-blog.csdn.net/20160913194106249)
+
 ### 两列合并
 
 ```python
